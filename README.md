@@ -1,6 +1,6 @@
-# q
+# q 🚀
 
-Helper functions galore! 🚀
+Helper functions galore!
 
 ## Getting Started
 
