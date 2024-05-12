@@ -24,3 +24,6 @@ jobs:
 
       - name: Test
         run: go test -v ./...
+
+      - name: List
+        run: GOPROXY=proxy.golang.org go list -m github.com/patrixr/q@${{github.ref_name}}

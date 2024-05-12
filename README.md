@@ -1,6 +1,6 @@
 # q
 
-Project Q is a robust collection of helper functions designed to enhance and simplify the development process. These helper functions are aimed at offering solutions for caching, data manipulation (such as filtering and mapping), unique data generation, and environment variable management. This toolkit is implemented in Go, emphasizing simplicity, performance, and reliability.
+Helper functions galore! 🚀
 
 ## Getting Started
 
