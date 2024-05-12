@@ -1,4 +1,4 @@
-module q
+module github.com/patrixr/q
 
 go 1.22.0
 
