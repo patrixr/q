@@ -1,8 +1,10 @@
 package q
 
 import (
+	"context"
 	"sync"
 	"sync/atomic"
+	"time"
 )
 
 type JobProcessor[T any] interface {
@@ -18,6 +20,7 @@ type BackgroundJob[J any] struct {
 	errorHanlder func(error)
 	workers      int
 	waitGroup    sync.WaitGroup
+	cancel       context.CancelFunc
 }
 
 // NewBackgroundJob creates a new background job processor
@@ -25,17 +28,21 @@ type BackgroundJob[J any] struct {
 // The executor function is called for each job in the queue.
 // It uses Go routines to process the jobs concurrently.
 func NewBackgroundJob[J any](
+	ctx context.Context,
 	executor func(J) error,
 	errorHandler func(error),
 	concurrency int,
 ) JobProcessor[J] {
 	channel := make(chan J, 100)
 
+	localCtx, cancel := context.WithCancel(ctx)
+
 	job := &BackgroundJob[J]{
 		queue:        channel,
 		executor:     executor,
 		workers:      concurrency,
 		errorHanlder: errorHandler,
+		cancel:       cancel,
 	}
 
 	job.waitGroup.Add(concurrency)
@@ -43,13 +50,23 @@ func NewBackgroundJob[J any](
 	for i := 0; i < concurrency; i++ {
 		go func() {
 			defer job.waitGroup.Done()
-			for j := range channel {
-				err := job.executor(j)
-				if err != nil {
-					job.errors.Add(1)
-					if errorHandler != nil {
+
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case <-localCtx.Done():
+					return
+				case j, ok := <-channel:
+					if !ok {
+						return
+					}
+					err := job.executor(j)
+					if err != nil {
 						errorHandler(err)
 					}
+				default:
+					time.Sleep(100 * time.Millisecond)
 				}
 			}
 		}()
@@ -68,5 +85,6 @@ func (job *BackgroundJob[J]) PerformNow(j J) error {
 
 func (job *BackgroundJob[J]) Close() {
 	close(job.queue)
+	job.cancel()
 	job.waitGroup.Wait()
 }

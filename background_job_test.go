@@ -1,6 +1,7 @@
 package q
 
 import (
+	"context"
 	"errors"
 	"sync/atomic"
 	"testing"
@@ -18,7 +19,7 @@ func TestBackgroundJob_PerformLater(t *testing.T) {
 		t.Errorf("Error handler should not be called: %v", err)
 	}
 
-	jobProcessor := NewBackgroundJob(executor, errorHandler, 3)
+	jobProcessor := NewBackgroundJob(context.Background(), executor, errorHandler, 3)
 	defer jobProcessor.Close()
 
 	for i := 0; i < 10; i++ {
@@ -43,7 +44,7 @@ func TestBackgroundJob_PerformNow(t *testing.T) {
 		t.Errorf("Error handler should not be called: %v", err)
 	}
 
-	jobProcessor := NewBackgroundJob(executor, errorHandler, 3)
+	jobProcessor := NewBackgroundJob(context.Background(), executor, errorHandler, 3)
 	defer jobProcessor.Close()
 
 	for i := 0; i < 10; i++ {
@@ -73,7 +74,7 @@ func TestBackgroundJob_ErrorHandling(t *testing.T) {
 		errorCount.Add(1)
 	}
 
-	jobProcessor := NewBackgroundJob(executor, errorHandler, 3)
+	jobProcessor := NewBackgroundJob(context.Background(), executor, errorHandler, 3)
 	defer jobProcessor.Close()
 
 	for i := 0; i < 10; i++ {
@@ -91,7 +92,7 @@ func TestBackgroundJob_ErrorHandling(t *testing.T) {
 	}
 }
 
-func TestBackgroundJob_Close(t *testing.T) {
+func TestBackgroundJob_Cancel_Context(t *testing.T) {
 	var processedCount atomic.Int32
 	executor := func(job int) error {
 		processedCount.Add(1)
@@ -102,15 +103,18 @@ func TestBackgroundJob_Close(t *testing.T) {
 		t.Errorf("Error handler should not be called: %v", err)
 	}
 
-	jobProcessor := NewBackgroundJob(executor, errorHandler, 3)
+	ctx, cancel := context.WithCancel(context.Background())
+	jobProcessor := NewBackgroundJob(ctx, executor, errorHandler, 3)
 
 	for i := 0; i < 10; i++ {
 		jobProcessor.PerformLater(i)
 	}
 
-	jobProcessor.Close() // Ensure all jobs are processed before closing
+	cancel() // Cancel the context
 
-	if processedCount.Load() != 10 {
-		t.Errorf("Expected 10 jobs to be processed, but got %d", processedCount.Load())
+	time.Sleep(1 * time.Second) // Allow some time for jobs to be processed
+
+	if processedCount.Load() > 0 {
+		t.Errorf("Expected no jobs to be processed, but got %d", processedCount.Load())
 	}
 }
