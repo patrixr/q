@@ -17,7 +17,7 @@ type BackgroundJob[J any] struct {
 	queue        chan J
 	errors       atomic.Int32
 	executor     func(J) error
-	errorHanlder func(error)
+	errorHanlder func(J, error)
 	workers      int
 	waitGroup    sync.WaitGroup
 	cancel       context.CancelFunc
@@ -30,7 +30,7 @@ type BackgroundJob[J any] struct {
 func NewBackgroundJob[J any](
 	ctx context.Context,
 	executor func(J) error,
-	errorHandler func(error),
+	errorHandler func(J, error),
 	concurrency int,
 ) JobProcessor[J] {
 	channel := make(chan J, 100)
@@ -63,7 +63,7 @@ func NewBackgroundJob[J any](
 					}
 					err := job.executor(j)
 					if err != nil {
-						errorHandler(err)
+						errorHandler(j, err)
 					}
 				default:
 					time.Sleep(100 * time.Millisecond)

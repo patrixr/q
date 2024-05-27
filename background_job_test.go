@@ -15,7 +15,7 @@ func TestBackgroundJob_PerformLater(t *testing.T) {
 		return nil
 	}
 
-	errorHandler := func(err error) {
+	errorHandler := func(_ int, err error) {
 		t.Errorf("Error handler should not be called: %v", err)
 	}
 
@@ -40,7 +40,7 @@ func TestBackgroundJob_PerformNow(t *testing.T) {
 		return nil
 	}
 
-	errorHandler := func(err error) {
+	errorHandler := func(_ int, err error) {
 		t.Errorf("Error handler should not be called: %v", err)
 	}
 
@@ -70,7 +70,7 @@ func TestBackgroundJob_ErrorHandling(t *testing.T) {
 		return nil
 	}
 
-	errorHandler := func(err error) {
+	errorHandler := func(_ int, err error) {
 		errorCount.Add(1)
 	}
 
@@ -99,7 +99,7 @@ func TestBackgroundJob_Cancel_Context(t *testing.T) {
 		return nil
 	}
 
-	errorHandler := func(err error) {
+	errorHandler := func(_ int, err error) {
 		t.Errorf("Error handler should not be called: %v", err)
 	}
 
