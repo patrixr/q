@@ -1,5 +1,7 @@
 package q
 
+import "regexp"
+
 // Find searches for an element in the array that satisfies the predicate function.
 // It returns a boolean indicating whether such an element was found, the element itself,
 // and the index of the element in the array. If no element is found, it returns false,
@@ -43,5 +45,14 @@ func Find[T comparable](array []T, predicate func(T, int) bool) (bool, T, int) {
 func Eq[T comparable](val T) func(T, int) bool {
 	return func(it T, _ int) bool {
 		return it == val
+	}
+}
+
+// Match returns a predicate function that checks if an element matches the specified regular expression.
+// The function returns true if the element matches the regular expression, otherwise false.
+func Match(rexp string) func(string, int) bool {
+	r := regexp.MustCompile(rexp)
+	return func(it string, _ int) bool {
+		return r.MatchString(it)
 	}
 }
