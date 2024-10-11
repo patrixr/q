@@ -7,7 +7,7 @@
 *.dll
 *.so
 *.dylib
-
+.zed
 # Test binary, built with `go test -c`
 *.test
 
@@ -19,4 +19,3 @@
 
 # Go workspace file
 go.work
-
