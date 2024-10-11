@@ -112,7 +112,7 @@ func TestBackgroundJob_Cancel_Context(t *testing.T) {
 
 	cancel() // Cancel the context
 
-	time.Sleep(1 * time.Second) // Allow some time for jobs to be processed
+	time.Sleep(2 * time.Second) // Allow some time for jobs to be processed
 
 	if processedCount.Load() > 0 {
 		t.Errorf("Expected no jobs to be processed, but got %d", processedCount.Load())
