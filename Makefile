@@ -3,7 +3,7 @@ build:
 	go build -v ./...
 
 test:
-	go test -race fmt -json ./... | go run  github.com/mfridman/tparse@latest -all
+	go test -race -json -v ./... | go run  github.com/mfridman/tparse@latest -all
 
 coverage:
 	go test -v -coverprofile=.out/cover.out -covermode=atomic ./...
