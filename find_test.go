@@ -10,9 +10,9 @@ func TestFind(t *testing.T) {
 		predicate := func(item int, index int) bool {
 			return item == 3
 		}
-		found, item := Find(array, predicate)
-		if !found || item != 3 {
-			t.Errorf("Expected to find 3, but got found=%v, item=%v", found, item)
+		found, item, index := Find(array, predicate)
+		if !found || item != 3 || index != 2 {
+			t.Errorf("Expected to find 3 at index 2, but got found=%v, item=%v, index=%v", found, item, index)
 		}
 	})
 
@@ -21,9 +21,9 @@ func TestFind(t *testing.T) {
 		predicate := func(item string, index int) bool {
 			return item == "banana"
 		}
-		found, item := Find(array, predicate)
-		if !found || item != "banana" {
-			t.Errorf("Expected to find 'banana', but got found=%v, item=%v", found, item)
+		found, item, index := Find(array, predicate)
+		if !found || item != "banana" || index != 1 {
+			t.Errorf("Expected to find 'banana' at index 1, but got found=%v, item=%v, index=%v", found, item, index)
 		}
 	})
 
@@ -32,9 +32,9 @@ func TestFind(t *testing.T) {
 		predicate := func(item int, index int) bool {
 			return item == 6
 		}
-		found, item := Find(array, predicate)
-		if found || item != 0 {
-			t.Errorf("Expected not to find any item, but got found=%v, item=%v", found, item)
+		found, item, index := Find(array, predicate)
+		if found || item != 0 || index != -1 {
+			t.Errorf("Expected not to find any item, but got found=%v, item=%v, index=%v", found, item, index)
 		}
 	})
 
@@ -43,9 +43,9 @@ func TestFind(t *testing.T) {
 		predicate := func(item int, index int) bool {
 			return item == 1
 		}
-		found, item := Find(array, predicate)
-		if found || item != 0 {
-			t.Errorf("Expected not to find any item in empty array, but got found=%v, item=%v", found, item)
+		found, item, index := Find(array, predicate)
+		if found || item != 0 || index != -1 {
+			t.Errorf("Expected not to find any item in empty array, but got found=%v, item=%v, index=%v", found, item, index)
 		}
 	})
 
@@ -54,9 +54,9 @@ func TestFind(t *testing.T) {
 		predicate := func(item int, index int) bool {
 			return index == 2 // Looking for the item at index 2
 		}
-		found, item := Find(array, predicate)
-		if !found || item != 30 {
-			t.Errorf("Expected to find item at index 2 (30), but got found=%v, item=%v", found, item)
+		found, item, index := Find(array, predicate)
+		if !found || item != 30 || index != 2 {
+			t.Errorf("Expected to find item at index 2 (30), but got found=%v, item=%v, index=%v", found, item, index)
 		}
 	})
 }

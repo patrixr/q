@@ -21,6 +21,7 @@ type BackgroundJob[J any] struct {
 	workers      int
 	waitGroup    sync.WaitGroup
 	cancel       context.CancelFunc
+	ended        atomic.Bool
 }
 
 // NewBackgroundJob creates a new background job processor
@@ -43,6 +44,7 @@ func NewBackgroundJob[J any](
 		workers:      concurrency,
 		errorHanlder: errorHandler,
 		cancel:       cancel,
+		ended:        atomic.Bool{},
 	}
 
 	job.waitGroup.Add(concurrency)
@@ -54,11 +56,13 @@ func NewBackgroundJob[J any](
 			for {
 				select {
 				case <-ctx.Done():
+					job.ended.Store(true)
 					return
 				case <-localCtx.Done():
+					job.ended.Store(true)
 					return
 				case j, ok := <-channel:
-					if !ok {
+					if !ok || job.ended.Load() {
 						return
 					}
 					err := job.executor(j)
@@ -84,6 +88,7 @@ func (job *BackgroundJob[J]) PerformNow(j J) error {
 }
 
 func (job *BackgroundJob[J]) Close() {
+	job.ended.Store(true)
 	close(job.queue)
 	job.cancel()
 	job.waitGroup.Wait()
