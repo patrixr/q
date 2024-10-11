@@ -9,3 +9,9 @@ func Find[T comparable](array []T, predicate func (T, int) bool) (bool, T, int) 
 	var empty T
 	return false, empty, -1
 }
+
+func Eq[T comparable](val T) func (T, int) bool {
+	return func (it T, _ int) bool {
+		return it == val
+	}
+}
