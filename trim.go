@@ -51,15 +51,11 @@ func TrimIndent(s string) string {
 
 	var builder strings.Builder
 
-	fmt.Println("leftmostIndent", leftmostIndent)
-
 	if leftmostIndent < 0 {
 		leftmostIndent = 0
 	}
 
 	for i, ref := range trimmedLines {
-		fmt.Println(ref.indent, ref.line)
-
 		if len(ref.line) > 0 {
 			builder.WriteString(strings.Repeat(" ", ref.indent-leftmostIndent))
 			builder.WriteString(ref.line)
