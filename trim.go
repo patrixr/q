@@ -1,7 +1,6 @@
 package q
 
 import (
-	"fmt"
 	"strings"
 	"unicode"
 )
