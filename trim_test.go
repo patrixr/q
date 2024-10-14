@@ -27,15 +27,23 @@ func TestTrimIndent(t *testing.T) {
 		},
 		{
 			input:    "\t\t\t   \n\t\tAnother line with tabs.\n\t\t\t\nYet another line.",
-			expected: "\nAnother line with tabs.\n\nYet another line.",
+			expected: "\n    Another line with tabs.\n\nYet another line.",
 		},
 		{
 			input:    "   Mixed indents.\n\t\tTab indented line.\n    Another mixed line.",
-			expected: "Mixed indents.\nTab indented line.\nAnother mixed line.",
+			expected: "Mixed indents.\n Tab indented line.\n Another mixed line.",
 		},
 		{
 			input:    "",
 			expected: "",
+		},
+		{
+			input: `
+				START
+				   INDENT
+				END
+		    `,
+			expected: "\nSTART\n   INDENT\nEND\n",
 		},
 	}
 
