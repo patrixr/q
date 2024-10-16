@@ -18,7 +18,7 @@ import "regexp"
 // - bool: True if an element satisfying the predicate is found, otherwise false.
 // - T: The element that satisfies the predicate, or the zero value of type T if not found.
 // - int: The index of the element in the array, or -1 if not found.
-func Find[T comparable](array []T, predicate func(T, int) bool) (bool, T, int) {
+func Find[T any](array []T, predicate func(T, int) bool) (bool, T, int) {
 	for i, item := range array {
 		if predicate(item, i) {
 			return true, item, i
