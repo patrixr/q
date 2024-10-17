@@ -21,6 +21,16 @@ func (tree *Node[T]) Add(child T) *Node[T] {
 	return &node
 }
 
+func (tree *Node[T]) FindChild(predicate func(T) bool) *Node[T] {
+	for _, child := range tree.Children {
+		if predicate(child.Data) {
+			return child
+		}
+	}
+
+	return nil
+}
+
 func (tree *Node[T]) Traverse(cb func(it T)) {
 	cb(tree.Data)
 

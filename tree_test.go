@@ -83,3 +83,50 @@ func TestTraverse(t *testing.T) {
 		}
 	}
 }
+
+func TestFindChild(t *testing.T) {
+	root := &Node[int]{
+		Data: 1,
+		Children: []*Node[int]{
+			{Data: 2, Children: nil},
+			{Data: 3, Children: nil},
+			{Data: 4, Children: nil},
+		},
+	}
+
+	tests := []struct {
+		name      string
+		predicate func(int) bool
+		expected  *Node[int]
+	}{
+		{
+			name:      "Find first child",
+			predicate: func(data int) bool { return data == 2 },
+			expected:  root.Children[0],
+		},
+		{
+			name:      "Find middle child",
+			predicate: func(data int) bool { return data == 3 },
+			expected:  root.Children[1],
+		},
+		{
+			name:      "Find last child",
+			predicate: func(data int) bool { return data == 4 },
+			expected:  root.Children[2],
+		},
+		{
+			name:      "Child not found",
+			predicate: func(data int) bool { return data == 5 },
+			expected:  nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := root.FindChild(tt.predicate)
+			if result != tt.expected {
+				t.Errorf("FindChild() = %v, expected %v", result, tt.expected)
+			}
+		})
+	}
+}
