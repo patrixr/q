@@ -56,3 +56,31 @@ func Match(rexp string) func(string, int) bool {
 		return r.MatchString(it)
 	}
 }
+
+// FindAll searches for all elements in the array that satisfy the predicate function.
+// It returns a slice of elements that satisfy the predicate.
+//
+// The function is generic and works with any type T.
+//
+// Parameters:
+//   - array: A slice of elements of type T to search through.
+//   - predicate: A function that takes an element of type T and its index, and returns
+//     a boolean indicating whether the element satisfies the condition.
+//
+// Returns:
+// - []T: A slice of elements that satisfy the predicate. If no elements are found, it returns an empty slice.
+//
+// Example usage:
+//
+//	array := []int{1, 2, 3, 4, 5}
+//	results := q.FindAll(array, func(n int, _ int) bool { return n%2 == 0 })
+//	// results: []int{2, 4}
+func FindAll[T any](array []T, predicate func(T, int) bool) []T {
+	var res []T
+	for i, item := range array {
+		if predicate(item, i) {
+			res = append(res, item)
+		}
+	}
+	return res
+}
