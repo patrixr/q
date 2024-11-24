@@ -81,18 +81,19 @@ func (emitter *EventEmitter) Off(ev string, ref EventRef) {
 }
 
 func (emitter *EventEmitter) Fire(ev string, data any) (bool, []error) {
-	emitter.mu.Lock()
-
 	if emitter.ctx.Err() != nil {
 		// cancelled context
 		return false, []error{emitter.ctx.Err()}
 	}
+
+	emitter.mu.Lock()
 
 	wg := sync.WaitGroup{}
 
 	handlers, ok := emitter.callbacks[ev]
 
 	if !ok || len(handlers) == 0 {
+		emitter.mu.Unlock()
 		return true, []error{}
 	}
 

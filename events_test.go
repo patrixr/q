@@ -36,6 +36,17 @@ func TestEventEmitter_On(t *testing.T) {
 		assert.True(t, called, "Event did not fire as intended")
 	})
 
+	t.Run("test firing event with no handlers", func(t *testing.T) {
+		emitter := NewEventEmitter(context.Background(), 1).(*EventEmitter)
+
+		ok, errs := emitter.Fire("test", nil)
+		assert.Empty(t, errs)
+		assert.True(t, ok)
+		ok, errs = emitter.Fire("test", nil)
+		assert.Empty(t, errs)
+		assert.True(t, ok)
+	})
+
 	t.Run("test removing handler", func(t *testing.T) {
 		emitter := NewEventEmitter(context.Background(), 1).(*EventEmitter)
 		count := 0
