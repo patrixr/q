@@ -2,12 +2,14 @@ package q
 
 func Assert(truth bool, msg string) {
 	if !truth {
-		Boom("Assertion failed:" + msg)
+		Boom("Assertion failed: " + msg)
 	}
 }
 
 func AssertNoError(err error) {
-	AssertNil(err, err.Error())
+	if err != nil {
+		Boom(err.Error())
+	}
 }
 
 func AssertNotNil(item any, msg string) {
