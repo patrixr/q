@@ -6,6 +6,6 @@ import (
 )
 
 func Boom(msg string) {
-	fmt.Fprintf(os.Stderr, msg)
+	fmt.Fprint(os.Stderr, msg)
 	os.Exit(1)
 }
