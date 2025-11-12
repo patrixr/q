@@ -11,3 +11,11 @@ func NewPair[K any, V any](key K, value V) Pair[K, V] {
 		Value: value,
 	}
 }
+
+func (p Pair[K, V]) GetKey() K {
+	return p.Key
+}
+
+func (p Pair[K, V]) GetValue() V {
+	return p.Value
+}
